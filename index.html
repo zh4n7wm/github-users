@@ -1,0 +1,196 @@
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>Developers on Github</title>
+        <script type="text/javascript" charset="utf-8" src="jquery.js"></script>
+        <script type="text/javascript" charset="utf-8">
+
+        function mk_link(e) {
+            let link = $('<div/>').html( $('<a/>').attr({
+                    href: 'http://github.com/' + e.login ,
+                    target: '_blank',
+                    title: e.name
+            }).html( e.login ) ).addClass( 'ident' );
+            return link;
+        }
+
+        function generate_page(city) {
+            $.ajax({
+              url: `city/${city}.json`,
+                method: 'get',
+                dataType: 'json',
+                success: function(list) {
+
+                    var count = 1;
+
+                    $('#namelist').empty();
+                    $(list).map( function(i,e) {
+                        if(!e)
+                            return;
+
+                        if( e.public_repos == 0 )
+                            return;
+
+                        if( e.followers == 0 ) {
+                            var link = mk_link(e);
+                            var info = $('<div/>').addClass('info')
+                                    .append( link );
+                            if(e.name)
+                                info.append( '<div class="name">' + e.name + '</div>' );
+
+                            if(e.location)
+                                info.append( '<div class="location">' + e.location + '</div>' );
+
+                            var node = $('<li/>').addClass('person-small')
+                                .html( info );
+                            node.append( '<div style="clear:both;"> </div>' );
+                            $('#namelist').append(node);
+                            return node;
+                        }
+
+                        var link = mk_link(e);
+                        var gravatar = $('<img/>').addClass('gravatar').attr({
+                            title: e.name,
+                            alt:  e.name,
+                            src: e.avatar_url + '&s=96' }).css({ });
+
+                        // http://github.com/users/follow?target=naoya
+                        var info = $('<div/>').addClass( 'info' )
+                            .append( link );
+
+                        if(e.name)
+                            info.append( '<div class="name">' + e.name + '</div>' );
+                        if(e.email)
+                            info.append( '<div class="email">' + e.email + '</div>' );
+                        if(e.blog) {
+                            if (! e.blog.startsWith('http')) {
+                                e.blog = 'http://' + e.blog;
+                            }
+                            info.append( '<div class="blog"><a target="_blank" href="' + e.blog + '">' + e.blog + '</a></div>' );
+                        }
+                        if(e.company)
+                            info.append( '<div class="company">' + e.company + '</div>' );
+                        if(e.location)
+                            info.append( '<div class="location">' + e.location + '</div>' );
+
+                        info.append( '<div>Follower: ' + e.followers + '</div>');
+                        info.append( '<div>Repositories: ' + e.public_repos + '</div>');
+
+                        var num  = $('<div/>').addClass('number').html( count++ );
+
+                        // var num  = $('<div/>').addClass('number')..html( e.followers_count );
+
+                        //var fontSize = (e.followers / 12 ) + 36;
+                        var fontSize = 36;
+                        num.css({ fontSize: fontSize });
+
+                        var node = $('<li/>').addClass('person').append( gravatar ).append( info );
+                        node.append( num );
+
+                        node.append( '<div style="clear:both;"> </div>' );
+                        $('#namelist').append(node);
+                    });
+
+                    $('#namelist').append( '<div style="clear:both;"> </div>' );
+                }
+            });
+        }
+
+        $(function() {
+            const city = 'chengdu';
+            generate_page(city);
+
+            // event handler, generate new city page when change city.
+            $('#select-city').on('change', function() {
+                const city = $(this).val();
+                generate_page(city);
+            });
+        });
+        </script>
+        <style type="text/css" media="screen">
+            body { margin: 30px; }
+            a,a:link {
+                color: #13C;
+                text-decoration: none;
+            }
+            a:hover { text-decoration: underline; }
+
+            li.person {
+                padding: 3px 3px;
+                list-style: none;
+
+                border-top: 1px solid #eee;
+                border-left: 1px solid #eee;
+                border-right: 1px solid #ddd;
+                border-bottom: 1px solid #ccc;
+
+                width: 180px;
+                display: inline;
+                float: left;
+                margin: 12px 9px;
+                position: relative;
+                height: 250px;
+            }
+            li:hover { background: #eee; }
+
+            li.person-small {
+                padding: 3px 8px;
+                list-style: none;
+                border: 1px solid #ddd;
+                width: 200px;
+                display: inline;
+                float: left;
+                margin: 5px 3px;
+                position: relative;
+                height: 86px;
+            }
+
+            .ident { font-size: 24px; }
+            .gravatar {
+                margin: 10px;
+                width: 96px;
+                height: 96px;
+            }
+            .info {
+                margin: 10px;
+                color: #777;
+                font-size: 12px;
+            }
+
+            .number { position: absolute; top: 0px; right: 10px; color: #eee; }
+            .info,
+            .gravatar {
+                /* float:left; */
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="city" width="80%">
+            <span>Developers on Github，请选择城市：</span>
+            <select id="select-city">
+                <option value="chengdu" selected="selected">成都</option>
+                <option value="chongqing">重庆</option>
+                <option value="beijing">北京</option>
+                <option value="shanghai">上海</option>
+                <option value="shenzhen">深圳</option>
+                <option value="hangzhou">杭州</option>
+                <option value="guangzhou">广州</option>
+                <option value="nanjing">南京</option>
+                <option value="xian">西安</option>
+                <option value="zhuhai">珠海</option>
+                <option value="xiamen">厦门</option>
+            </select>
+        </div>
+        <div width="80%">
+            整理了这份清单，希望将各地区的开发者聚集/连结起来，互相交流。
+            (由follower数量排序)
+            <a href="http://github.com/ox0spy/github-users">Fork this on github</a>
+            ( 前端代码基于<a href="http://github.com/c9s/github-taiwan">@c9s/github-taiwan</a>做了些修改。 )
+
+        </div>
+        <ul id="namelist"></ul>
+        <div style="clear:both;"> </div>
+        <a target="_blank" href="http://github.com">Github &gt;&gt;</a>
+    </body>
+</html>
