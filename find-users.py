@@ -141,7 +141,7 @@ def generate_city_json(locations):
             os.mkdir(CITY_DIR)
         fname = os.path.join(CITY_DIR, '{}.json'.format(loc))
         fd = open(fname, 'w')
-        json.dump(data, fd)
+        json.dump(data, fd, ensure_ascii=False)
         fd.close()
 
 
@@ -163,16 +163,12 @@ def generate_lang_json(langs, loc='China'):
             os.mkdir(LANG_DIR)
         fname = os.path.join(LANG_DIR, '{}-{}.json'.format(loc, lang))
         fd = open(fname, 'w')
-        json.dump(data, fd)
+        json.dump(data, fd, ensure_ascii=False)
         fd.close()
 
 
 if __name__ == '__main__':
-    #locations = ['beijing', 'shanghai', 'shenzhen', 'hangzhou', 'guangzhou', 'chengdu', 'xian', 'nanjing', 'xiamen', 'dalian', 'zhuhai', 'qingdao']
-    #generate_city_json(locations)
-    #langs = ['Python', 'PHP', 'Java', 'JavaScript', 'C', 'C++', 'CSS',
-    #         'Objective-C', 'HTML', 'Ruby', 'Go', 'Swift', 'Perl', 'R',
-    #        ]
+
     parser = argparse.ArgumentParser(
         description='fetch github users by location or language'
     )

@@ -25,5 +25,5 @@ if __name__ == '__main__':
 
     sorted_res = sorted(res, key=lambda k: k['followers'], reverse=True)
     fd = open(args.output, 'w')
-    json.dump(sorted_res, fd)
+    json.dump(sorted_res, fd, ensure_ascii=False)
     fd.close()
