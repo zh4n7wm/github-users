@@ -4,12 +4,12 @@
 
 find-users.py使用:
 
-  $ python find-users.py -p chengdu
-  $ python find-users.py -p 成都 chengdu 北京 beijing -l Python PHP
+    $ python find-users.py -p chengdu
+    $ python find-users.py -p 成都 chengdu 北京 beijing -l Python PHP
 
 merge-json.py使用:
 
-  $ python merge-json.py -i chengdu.json 成都.json -o chengdu.json
+    $ python merge-json.py -i chengdu.json 成都.json -o chengdu.json
 
 ## 问题
 
